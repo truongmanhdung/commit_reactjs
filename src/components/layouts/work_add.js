@@ -1,5 +1,4 @@
 import React from 'react'
-import apiCaller from '../../utils/apiCaller';
 
 import * as actions from '../../actions/index'
 import { connect } from "react-redux";

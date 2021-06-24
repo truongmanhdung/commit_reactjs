@@ -2,6 +2,8 @@
 import React, { Component } from "react";
 // import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import * as actions from '../actions/index'
 
 class TaskItem extends Component {
  onDelete = (id) =>{
@@ -9,8 +11,8 @@ class TaskItem extends Component {
      this.props.onDelete(id)
    }
  }
- onUpdateStatus  = (id,status) =>{
-  this.props.onUpdateStatus(id,status);
+ onUpdateStatus  = (work) =>{
+  this.props.onUpdateStatus(work);
  }
   render() {
     var {work,index} = this.props;
@@ -23,7 +25,7 @@ class TaskItem extends Component {
         <td className="text-center">{work.date}</td>
         <td className="text-center">{work.time}p</td>
         <td className="text-center">
-          <span onClick={()=>this.onUpdateStatus(work.id,work.status)} className={work.status===true?'btn btn-primary':'btn btn-danger'}>
+          <span onClick={()=>this.onUpdateStatus(work)} className={work.status===true?'btn btn-primary':'btn btn-danger'}>
           {work.status===true?'hoàn thành':'chưa'}
             </span>
         </td>
@@ -39,6 +41,13 @@ class TaskItem extends Component {
     );
   }
 }
+const mapDispatchToProps = (dispatch,props) =>{
+  return {
+    onUpdateStatus: (work) =>{
+      dispatch(actions.updateStatusRequest(work));
+    },
+  }
+}
 
+export default connect(null,mapDispatchToProps)(TaskItem);
 
-export default TaskItem;

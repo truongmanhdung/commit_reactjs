@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import TaskItem from "./taskitem";
 import { connect } from "react-redux";
 import * as actions from '../actions/index'
-import callAPI from '../utils/apiCaller';
 class TaskList extends Component {
   // tạo constructor
   constructor(props){
@@ -16,6 +15,7 @@ class TaskList extends Component {
     this.props.fetchAllWorks()
     
  }
+
   // sự kiện onchange
   onChange = (event) => {
     var target = event.target;
@@ -41,10 +41,6 @@ class TaskList extends Component {
     // var value = target.value;
     
   }
-  onUpdateStatus = (id,status)=>{
-    this.props.onUpdateStatus(id,status);
-  }
-
   render() {
     
     var {works} = this.props;
@@ -129,10 +125,6 @@ const mapDispatchToProps = (dispatch,props) =>{
     onDeleteWorks: (id) =>{
       dispatch(actions.deleteWorksRequest(id));
     },
-    onUpdateStatus: (id,status) =>{
-      dispatch(actions.updateWorksRequest(id,status));
-    }
-
   }
 }
 

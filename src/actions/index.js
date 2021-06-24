@@ -38,12 +38,7 @@ export const onDelete = (id) =>{
           id: id,
      }
 }
-export const onEditTask = (task) =>{
-     return {
-          type: types.EDIT_TASK,
-          task: task
-     }
-}
+
 export const filterTask = (filter) =>{
      return {
           type: types.FILTER_TABLE,
@@ -64,13 +59,11 @@ export const sortTask = (sort) =>{
 }
 
 export const fetchWorksRequest = ()=>{
-     return(dispatch) =>{
+     return async (dispatch) =>{
           if(localStorage.getItem('user')){
                var id_user = localStorage.getItem('user');
-               return callAPI(`users/${id_user}/works`,'GET',null)
-               .then(res=>{
-                    dispatch(fetchWorks(res.data))
-               })
+               const res = await callAPI(`users/${id_user}/works`, 'GET', null);
+               dispatch(fetchWorks(res.data));
           }
            
      }
@@ -84,14 +77,12 @@ export const fetchWorks = (works) =>{
 }
 
 export const deleteWorksRequest = (id) =>{
-     return dispatch =>{
+     return async dispatch =>{
           var id_user = localStorage.getItem('user');
-          return callAPI(`users/${id_user}/works/${id}`,'DELETE',null)
-          .then(res=>{
-               if(res.status===200){
-                    dispatch(deleteWorks(id))
-               }
-          })
+          const res = await callAPI(`users/${id_user}/works/${id}`, 'DELETE', null);
+          if (res.status === 200) {
+               dispatch(deleteWorks(id));
+          }
      }
 }
 
@@ -103,12 +94,10 @@ export const deleteWorks = (id) =>{
 }
 
 export const addWorksRequest = (work) =>{
-     return dispatch =>{
+     return async dispatch =>{
           var id_user = localStorage.getItem('user');
-          return callAPI(`users/${id_user}/works`,'POST',work)
-          .then(res=>{
-               dispatch(addWorks(res.data));
-          })
+          const res = await callAPI(`users/${id_user}/works`, 'POST', work);
+          dispatch(addWorks(res.data));
      }
 }
 
@@ -120,23 +109,52 @@ export const addWorks = (work) =>{
 }
 
 
-export const updateWorksRequest = (id,status) =>{
-     return dispatch =>{
+export const updateStatusRequest = (work) =>{
+     return async dispatch =>{
           var id_user = localStorage.getItem('user');
-          return callAPI(`users/${id_user}/works/${id}`,'PUT',{
-               status: !status
-          })
-          .then(res=>{
-               dispatch(updateWorks(res.data));
+          callAPI(`users/${id_user}/works/${work.id}`, 'PUT',{
+               status : !work.status
+          }).then(res=>{
+               dispatch(updateStatus(res.data));
           })
      }
 }
 
-export const updateWorks = (id,status) =>{
+export const updateStatus = (work) =>{
      return {
           type: types.UPDATE_STATUS,
-          id,
-          status
+          work
      }
 }
 
+export const getWorksRequest = (id)=>{
+     return async dispatch =>{
+          var id_user = localStorage.getItem('user');
+          const res = await callAPI(`users/${id_user}/works/${id}`, 'GET', null);
+          dispatch(editWorks(res.data));
+     }
+}
+
+export const editWorks = (work)=>{
+     return {
+          type: types.EDIT_WORKS,
+          work
+     }
+}
+
+export const updateWorksRequest = (work)=>{
+     return async dispatch =>{
+          var id_user = localStorage.getItem('user');
+          callAPI(`users/${id_user}/works/${work.id}`, 'PUT',work).then(res=>{
+               dispatch(updateWorks(res.data));
+          })
+          
+     }
+}
+
+export const updateWorks = (work)=>{
+     return {
+          type: types.UPDATE_WORKS,
+          work
+     }
+}

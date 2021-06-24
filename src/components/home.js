@@ -3,7 +3,6 @@ import Control from "./control";
 import TaskList from "./tasklist";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import * as actions from "../actions/index";
 class Home extends Component {
       // đóng mở form
   displayForm = ()=>{
@@ -64,20 +63,11 @@ class Home extends Component {
 const mapStateToProps = (state) => {
   return {
     isDisplayform: state.isDisplayform,
-    itemEditting: state.itemEditting,
   };
 };
 const mapDispatchToProps = (dispatch, props) => {
   return {
-    onToggleForm: () => {
-      dispatch(actions.toggleForm());
-    },
-    onClearTask: (task) => {
-      dispatch(actions.onEditTask(task));
-    },
-    openForm: () => {
-      dispatch(actions.openForm());
-    },
+    
   };
 };
 

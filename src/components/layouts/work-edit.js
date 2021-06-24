@@ -1,5 +1,7 @@
 import React from "react";
 import apiCaller from "../../utils/apiCaller";
+import { connect } from "react-redux";
+import * as actions from '../../actions/index'
 class WorkEdit extends React.Component {
   constructor(props) {
     super(props);
@@ -14,20 +16,20 @@ class WorkEdit extends React.Component {
   componentDidMount() {
     var { match } = this.props;
     if (match) {
-      var id_user = localStorage.getItem("user");
       var id = match.params.id;
-      apiCaller(`users/${id_user}/works/${id}`, "GET", null).then((res) => {
-        if (res.data) {
-          var data = res.data;
-          this.setState({
-            id: data.id,
-            name_work: data.name_work,
-            date: data.date,
-            time: data.time,
-            status: data.status,
-          });
-        }
-      });
+      this.props.getWorks(id);
+    }
+  }
+  componentWillReceiveProps(nextProps){
+    if(nextProps && nextProps.itemEditting){
+      var {itemEditting} = nextProps;
+      this.setState({
+        id: itemEditting.id,
+        name_work: itemEditting.name_work,
+        date: itemEditting.date,
+        time: itemEditting.time,
+        status: itemEditting.status,
+      })
     }
   }
   onChange = (e) => {
@@ -44,20 +46,20 @@ class WorkEdit extends React.Component {
   onSave = (e) => {
     e.preventDefault();
     var { match, history } = this.props;
-    var id_user = localStorage.getItem("user");
     var { name_work, date, time,status } = this.state;
-   
     var id = match.params.id;
-    apiCaller(`users/${id_user}/works/${id}`, "PUT", {
+    var work = {
+      id: id,
       name_work: name_work,
       date: date,
       time: time,
-     status: status,
-    }).then((res) => {
-      if (res.data) {
-        history.push("/");
-      }
-    });
+      status: status,
+    }
+    if(id){
+      this.props.onUpdateWorks(work);
+    }
+    history.push("/");
+    
   };
   render() {
     var {name_work,date,time,status} = this.state;
@@ -126,4 +128,21 @@ class WorkEdit extends React.Component {
     );
   }
 }
-export default WorkEdit;
+const mapStateToProps = (state) => {
+  return {
+    itemEditting: state.itemEditting
+  }
+}
+const mapDispatchToProps = (dispatch,props) =>{
+  return {
+    getWorks: (id) =>{
+      dispatch(actions.getWorksRequest(id))
+    },
+    onUpdateWorks: (work) =>{
+      dispatch(actions.updateWorksRequest(work))
+    }
+    
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(WorkEdit);

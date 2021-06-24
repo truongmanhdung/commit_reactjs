@@ -12,7 +12,7 @@ var findIndex = (works,id)=>{
    }
 const myReducer = (state = initialState,action) =>{
      var index = -1;
-     var { id} = action;
+     var { id, work} = action;
 
      switch (action.type){
           case types.FETCH_WORKS:
@@ -26,13 +26,13 @@ const myReducer = (state = initialState,action) =>{
                state.push(action.work);
                return [...state];
           case types.UPDATE_STATUS:
-               index = findIndex(state,id);
-               state[index] = {
-                    ...state[index],
-                    status: id.status
-               }
-               window.location.reload();  
-               return [...state];
+               index = findIndex(state,work.id);
+               state[index] = work;
+               return [...state]
+          case types.UPDATE_WORKS:
+               index = findIndex(state,work.id);
+               state[index] = work;
+               return [...state]
           default: return [...state];
      }
 }
